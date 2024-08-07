@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "hadiuka"
+version = "0.0.1"
+description = "Python in Ukrainian"
+authors = [{name = "Sóla Lusøt"}]
+readme = "README.md"
+dependencies = ["pwcp>=0.10,<0.11"]
+optional-dependencies = {tests = ["pytest"]}
+scripts = {hadiuka = "hadiuka:main"}
+
+[tool.setuptools]
+packages = ["hadiuka"]
+
+[tool.setuptools.package-data]
+hadiuka = ["*.json"]
