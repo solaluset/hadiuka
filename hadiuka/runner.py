@@ -12,11 +12,14 @@ from .translator import mapping, string_modifiers, translate
 
 __version__ = metadata.version(__package__)
 
-mapping_with_apostrophes = defaultdict(dict)
+mapping_with_apostrophes = defaultdict(list)
 for k, v in mapping.items():
     first_part, *rest = k.split("'")
     if rest:
-        mapping_with_apostrophes[first_part][k] = v
+        mapping_with_apostrophes[first_part].append((k, v))
+        mapping_with_apostrophes[first_part].sort(
+            key=lambda elem: len(elem[0]), reverse=True
+        )
     else:
         mapping_with_apostrophes[first_part] = v
 
@@ -31,7 +34,9 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "--version", action="version", version=__package__ + " " + __version__
 )
-parser.add_argument("-m", action="store_true", help="запустити target як модуль")
+parser.add_argument(
+    "-m", action="store_true", help="запустити target як модуль"
+)
 parser.add_argument("target", nargs=argparse.OPTIONAL)
 parser.add_argument("args", nargs=argparse.ZERO_OR_MORE)
 

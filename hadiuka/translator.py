@@ -4,7 +4,9 @@ import json
 from pypp.parser import default_lexer
 
 
-with open(os.path.join(os.path.dirname(__file__), "mapping.json")) as mapping_file:
+with open(
+    os.path.join(os.path.dirname(__file__), "mapping.json")
+) as mapping_file:
     mapping = json.load(mapping_file)
 
 string_modifiers = {
@@ -13,7 +15,9 @@ string_modifiers = {
     "с": "r",
     "ю": "u",
 }
-string_modifiers.update({k.upper(): v.upper() for k, v in string_modifiers.items()})
+string_modifiers.update(
+    {k.upper(): v.upper() for k, v in string_modifiers.items()}
+)
 
 
 def _translate_gen(src, word_mapping, letter_mapping):
@@ -35,13 +39,30 @@ def _translate_gen(src, word_mapping, letter_mapping):
                     yield next_value
                 else:
                     next_value = value + next_value
-                    while not (match := next((word for word in result if next_value.startswith(word)), None)):
+                    while not (
+                        match := next(
+                            (
+                                (word, replacement)
+                                for word, replacement in result
+                                if next_value.startswith(word)
+                            ),
+                            None,
+                        )
+                    ):
                         next_tok = lex.token()
                         if not next_tok:
                             return
                         next_value += next_tok.value
-                    yield result[match]
-                    yield from _translate_gen(next_value[len(match):], word_mapping, letter_mapping)
+                    yield match[1]
+                    rest = ""
+                    while tok := lex.token():
+                        rest += tok.value
+                    yield from _translate_gen(
+                        next_value[len(match[0]) :] + rest,
+                        word_mapping,
+                        letter_mapping,
+                    )
+                    return
         elif set(value) <= set(letter_mapping):
             yield "".join(letter_mapping[c] for c in value)
         else:
