@@ -1,4 +1,11 @@
+import os
+import json
+
 from pypp.parser import default_lexer
+
+
+with open(os.path.join(os.path.dirname(__file__), "mapping.json")) as mapping_file:
+    mapping = json.load(mapping_file)
 
 
 def _translate_gen(src, mapping):

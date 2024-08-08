@@ -4,8 +4,7 @@ import argparse
 
 import pwcp
 
-from .runner import mapping
-from .translator import translate
+from .translator import mapping, translate
 
 
 mapping = {v: k for k, v in mapping.items()}

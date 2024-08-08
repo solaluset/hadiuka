@@ -1,20 +1,15 @@
 import os
 import sys
-import json
 import argparse
 from importlib import metadata
 
 import pwcp
 
 from . import config
-from .translator import translate
+from .translator import mapping, translate
 
 
 __version__ = metadata.version(__package__)
-
-with open(os.path.join(os.path.dirname(__file__), "mapping.json")) as mapping_file:
-    mapping = json.load(mapping_file)
-
 
 parser = argparse.ArgumentParser(
     (
