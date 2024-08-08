@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 from importlib import metadata
+from collections import defaultdict
 
 import pwcp
 
@@ -10,6 +11,14 @@ from .translator import mapping, string_modifiers, translate
 
 
 __version__ = metadata.version(__package__)
+
+mapping_with_apostrophes = defaultdict(dict)
+for k, v in mapping.items():
+    first_part, *rest = k.split("'")
+    if rest:
+        mapping_with_apostrophes[first_part][k] = v
+    else:
+        mapping_with_apostrophes[first_part] = v
 
 parser = argparse.ArgumentParser(
     (
@@ -36,7 +45,7 @@ def main(args=sys.argv[1:]):
         preprocessor.disabled = True
         return translate(
             orig_preprocess(src, filename, preprocessor),
-            mapping,
+            mapping_with_apostrophes,
             string_modifiers,
         )
 

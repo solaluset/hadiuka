@@ -22,7 +22,26 @@ def _translate_gen(src, word_mapping, letter_mapping):
     while tok := lex.token():
         value = tok.value
         if value in word_mapping:
-            yield word_mapping[value]
+            result = word_mapping[value]
+            if isinstance(result, str):
+                yield result
+            else:
+                next_tok = lex.token()
+                if not next_tok:
+                    return
+                next_value = next_tok.value
+                if not next_value.startswith("'"):
+                    yield value
+                    yield next_value
+                else:
+                    next_value = value + next_value
+                    while not (match := next((word for word in result if next_value.startswith(word)), None)):
+                        next_tok = lex.token()
+                        if not next_tok:
+                            return
+                        next_value += next_tok.value
+                    yield result[match]
+                    yield from _translate_gen(next_value[len(match):], word_mapping, letter_mapping)
         elif set(value) <= set(letter_mapping):
             yield "".join(letter_mapping[c] for c in value)
         else:
