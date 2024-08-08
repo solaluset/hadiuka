@@ -34,7 +34,9 @@ def main(args=sys.argv[1:]):
 
     orig_preprocess = pwcp.set_preprocessing_function(preprocess)
 
-    print(pwcp.preprocessor.preprocess(args.target, args.target.name)[0], end="")
+    print(
+        pwcp.preprocessor.preprocess(args.target, args.target.name)[0], end=""
+    )
 
 
 if __name__ == "__main__":
