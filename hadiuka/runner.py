@@ -1,19 +1,15 @@
 import os
 import sys
-import json
 import argparse
 from importlib import metadata
 
 import pwcp
 
 from . import config
+from .translator import mapping, string_modifiers, translate
 
 
 __version__ = metadata.version(__package__)
-
-with open(os.path.join(os.path.dirname(__file__), "mapping.json")) as mapping_file:
-    mapping = json.load(mapping_file)
-
 
 parser = argparse.ArgumentParser(
     (
@@ -37,9 +33,12 @@ def main(args=sys.argv[1:]):
     pwcp.add_file_extension(config.EXTENSION)
 
     def preprocess(src, filename, preprocessor):
-        for key, value in mapping.items():
-            preprocessor.define(f"{key} {value}")
-        return orig_preprocess(src, filename, preprocessor)
+        preprocessor.disabled = True
+        return translate(
+            orig_preprocess(src, filename, preprocessor),
+            mapping,
+            string_modifiers,
+        )
 
     orig_preprocess = pwcp.set_preprocessing_function(preprocess)
 

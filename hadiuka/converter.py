@@ -4,8 +4,11 @@ import argparse
 
 import pwcp
 
-from .runner import mapping
+from .translator import mapping, string_modifiers, translate
 
+
+mapping = {v: k for k, v in mapping.items()}
+string_modifiers = {v: k for k, v in string_modifiers.items()}
 
 parser = argparse.ArgumentParser(
     (
@@ -22,10 +25,12 @@ def main(args=sys.argv[1:]):
     args = parser.parse_args(args)
 
     def preprocess(src, filename, preprocessor):
-        preprocessor.disabled = False
-        for key, value in mapping.items():
-            preprocessor.define(f"{value} {key}")
-        return orig_preprocess(src, filename, preprocessor)
+        preprocessor.disabled = True
+        return translate(
+            orig_preprocess(src, filename, preprocessor),
+            mapping,
+            string_modifiers,
+        )
 
     orig_preprocess = pwcp.set_preprocessing_function(preprocess)
 
