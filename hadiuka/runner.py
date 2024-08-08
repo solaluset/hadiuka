@@ -34,6 +34,8 @@ parser.add_argument("args", nargs=argparse.ZERO_OR_MORE)
 def main(args=sys.argv[1:]):
     args = parser.parse_args(args)
 
+    pwcp.add_file_extension(config.EXTENSION)
+
     def preprocess(src, filename, preprocessor):
         for key, value in mapping.items():
             preprocessor.define(f"{key} {value}")
@@ -44,9 +46,6 @@ def main(args=sys.argv[1:]):
     if not args.target:
         args.m = True
         args.target = "code"
-    else:
-        # for some reason this prevents `code` module from working
-        pwcp.add_file_extension(config.EXTENSION)
 
     pwcp.main_with_params(
         **vars(args),

@@ -1,1 +1,1 @@
-EXTENSION = ".py"
+EXTENSION = ".пай"
