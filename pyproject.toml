@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 
 [project]
 name = "hadiuka"
-version = "0.0.1"
+version = "0.0.2"
 description = "Python in Ukrainian"
 authors = [{name = "Sóla Lusøt"}]
 readme = "README.md"
