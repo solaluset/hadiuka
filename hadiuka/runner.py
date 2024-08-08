@@ -6,7 +6,7 @@ from importlib import metadata
 import pwcp
 
 from . import config
-from .translator import mapping, translate
+from .translator import mapping, string_modifiers, translate
 
 
 __version__ = metadata.version(__package__)
@@ -37,6 +37,7 @@ def main(args=sys.argv[1:]):
         return translate(
             orig_preprocess(src, filename, preprocessor),
             mapping,
+            string_modifiers,
         )
 
     orig_preprocess = pwcp.set_preprocessing_function(preprocess)
